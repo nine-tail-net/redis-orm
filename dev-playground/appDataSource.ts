@@ -15,5 +15,5 @@ export const AppDataSource = new DataSource({
 })
 
 client.connect().then(async _ => {
-    AppDataSource.initialize()
+    await AppDataSource.initialize()
 })

@@ -1,4 +1,5 @@
-import { RedisClient, Schema } from "../DataSource"
+import { RedisClient } from "../DataSource"
+import { Schema } from "./Schema"
 
 export type EntityType =
     | "HASH"

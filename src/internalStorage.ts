@@ -27,10 +27,10 @@ class InternalStorage {
         this.entityDefinition.set(object, definition)
     }
 
-    getEntityDefinition(object: object, originalEntityName?: string) {
+    getEntityDefinition(object: object) {
         const EntityDefinition = this.entityDefinition.get(object)
         if (!EntityDefinition)
-            throw new Error(`Entity definition not found` + originalEntityName ? ` for the: ${originalEntityName}` : "")
+            throw new Error(`Entity definition not found`)
         return EntityDefinition
     }
 }

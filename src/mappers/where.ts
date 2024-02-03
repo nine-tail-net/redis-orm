@@ -1,45 +1,32 @@
-import { KeysOperatorTypes, Operator, WhereOptions } from "../types";
-import { PrimitiveValue } from "../types/common";
+import { Schema, WhereOptions, } from "../types";
+import { isFindOperator, isPrimitive } from "../utils";
+import { OperatorMapper } from "./operators";
+import { Equal } from "../operators/FindOperators";
+import { wheresToRedisQuery } from "./wheresToRedisQuery";
 
-type propertyFilter = {
-    property: string,
-    value: PrimitiveValue,
-    type: Exclude<KeysOperatorTypes, "or">
+export function convertWhere(schema: Schema, ...wheres: WhereOptions[]): string {
+    if (!wheres.length) return ""
+    return wheresToRedisQuery(
+        wheres.map(where => parseParameters(where, schema)).flat(),
+        schema.properties
+    )
 }
 
+export function parseParameters(where: WhereOptions, schema: Schema): string[] {
+    const filters: string[] = [];
+    for (let key in where) {
+        if (!(key in schema.properties))
+            throw new Error(`${key} not exist in ${schema.name} entity.`)
 
-/// todo 
-export function convertToRedisQuery(): propertyFilter[] {
-    const filters: propertyFilter[] = [];
+        const value = where[key as keyof typeof where]
+        const schemaPropertyType = schema.properties[key]
+
+        if (isFindOperator(value))
+            filters.push(OperatorMapper(value, key, schemaPropertyType))
+        else if (isPrimitive(value))
+            filters.push(OperatorMapper(Equal(value), key, schemaPropertyType))
+        else
+            throw new Error("Value type not supported.")
+    }
     return filters
 }
-
-function isPrimitive(value: any) {
-    const valueType = typeof value
-    return valueType === "string"
-        || valueType === "boolean"
-        || valueType === "number"
-}
-
-// function convertToRedisQuery(where: Where[]): string {
-//     const filters: string[] = [];
-
-//     for (let key in where) {
-//         const value = where[key];
-
-//         if (!(typeof value === 'object')) {
-//             filters.push(`@${key}:${value}`);
-//         } else if ('$eq' in value) {
-//             filters.push(`@${key}:${value['$eq']}`);
-//         } else if ('$ne' in value) {
-//             filters.push(`!@${key}:${value['$ne']}`);
-//         } else if ('$gt' in value) {
-//             filters.push(`@${key}:[${value['$gt']} +inf]`);
-//         } else if ('$lt' in value) {
-//             filters.push(`@${key}:[-inf ${value['$lt']}]`);
-//         }
-//     }
-
-//     return filters.length == 0
-//         ? "" : filters.join(' ');
-// }

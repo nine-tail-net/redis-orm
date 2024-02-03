@@ -2,8 +2,11 @@ import { Entity } from "../../src"
 import { Property } from "../../src/decorators/Property"
 import { BaseEntity } from "../../src/repository/BaseEntity"
 
-@Entity({ name: "test", type: "HASH" })
-export class Test extends BaseEntity {
+@Entity({ name: "user", type: "HASH" })
+export class User extends BaseEntity {
     @Property({ type: "text" })
-    test!: string
+    name!: string
+
+    @Property({ type: "numeric" })
+    age!: number
 }
