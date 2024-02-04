@@ -1,5 +1,5 @@
 {
-  "name": "redis-orm",
+  "name": "redis-orm-node",
   "version": "0.0.1",
   "description": "",
   "main": "./dist/src/index.js",
