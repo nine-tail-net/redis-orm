@@ -19,6 +19,10 @@
     "redis",
     "node-redis"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nine-tail-net/redis-orm"
+  },
   "author": {
     "name": "nine-tail-net",
     "email": "support@nine-tail.net"
