@@ -10,7 +10,7 @@ export type EntityOptions = {
     type: EntityType
 }
 
-export class Entity { }
+export class EntityClass { }
 
 export type EntityDefinition = {
     schema: Schema,

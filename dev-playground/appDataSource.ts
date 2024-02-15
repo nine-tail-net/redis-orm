@@ -1,6 +1,6 @@
 import { createClient } from "redis"
 import * as entities from "./Entities"
-import { DataSource } from "../src/DataSource"
+import { DataSource } from "../src"
 
 const client = createClient()
 

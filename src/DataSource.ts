@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import * as RedisTypes from "redis"
-import { Entity } from "./types"
+import { EntityClass } from "./types"
 import { internalStorage } from "./internalStorage"
 import { Repository } from "./repository/Repository"
 import { Schema } from "./types/Schema";
@@ -15,12 +15,12 @@ export type RedisClient = RedisTypes.RedisClientType<
 export class DataSource {
     readonly client: RedisClient
     readonly schemas: Schema[] = []
-    readonly entities: Entity[] = []
+    readonly entities: EntityClass[] = []
     private synchronizeSchemas?: boolean
 
     constructor({ client, entities, sync }: {
         client: RedisClient,
-        entities: Entity[],
+        entities: EntityClass[],
         sync?: boolean
     }) {
         for (let entity of entities) {
@@ -36,7 +36,7 @@ export class DataSource {
         this.synchronizeSchemas = sync
     }
 
-    private createSchema(entity: Entity): Schema {
+    private createSchema(entity: EntityClass): Schema {
         const entityWorkspace = internalStorage.getEntityWorkspace(entity)
         if (!entityWorkspace.entityOptions)
             throw new Error(`Entity is not specified`)
