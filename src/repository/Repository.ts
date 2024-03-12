@@ -15,7 +15,7 @@ export function Repository<Entity extends new (...args: any[]) => any>(entity: E
 
         static async set<T extends object>(this: { new(): T }, id: string, value: Partial<T>) {
             const { connection } = internalStorage.getEntityDefinition(this)
-            const result = await connection.hSet(id, Object.entries(value as object))
+            const result = await connection.hSet(id, Object.entries(JSON.parse(JSON.stringify(value))))
             if (!result) return undefined;
             return { id, value } as FindResult<T>
         }
