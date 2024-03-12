@@ -13,7 +13,8 @@ const schema: schema = {
     index: `idx:test`,
     properties: {
         test: RedisTypes.SchemaFieldTypes.TEXT,
-        name: RedisTypes.SchemaFieldTypes.TEXT
+        name: RedisTypes.SchemaFieldTypes.TEXT,
+        taskId: RedisTypes.SchemaFieldTypes.TAG
     },
     options: {
         ON: "HASH",
@@ -24,10 +25,18 @@ const schema: schema = {
 const cases: Cases[] = [
     {
         input: {
-            test: "hello world",
-            name: Not(Equal("pika"))
+            taskId: 'task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f',
+            name: undefined,
         },
-        output: "@test:(hello world) -@name:(pika)"
+        output: "@taskId:{task\\:9461dfe9\\-41f7\\-4a04\\-bc1c\\-ce2e3855d00f}"
+
+    },
+    {
+        input: {
+            test: "hello world",
+            taskId: Not(Equal("task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f")),
+        },
+        output: "@test:(hello world) -@taskId:{task\\:9461dfe9\\-41f7\\-4a04\\-bc1c\\-ce2e3855d00f}"
 
     },
     {
@@ -44,6 +53,7 @@ describe("convert where to filter", () => {
     cases.forEach(({ input, output }) =>
         it("input to Equal output", () => {
             const result = convertWhere(schema, ...(Array.isArray(input) ? input : [input]))
+            console.log(result)
             expect(result).toEqual(output)
         })
     )

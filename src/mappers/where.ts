@@ -25,6 +25,8 @@ export function parseParameters(where: WhereOptions, schema: Schema): string[] {
             filters.push(OperatorMapper(value, key, schemaPropertyType))
         else if (isPrimitive(value))
             filters.push(OperatorMapper(Equal(value), key, schemaPropertyType))
+        else if (value === undefined)
+            continue;
         else
             throw new Error("Value type not supported.")
     }
