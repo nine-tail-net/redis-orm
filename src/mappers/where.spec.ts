@@ -1,7 +1,7 @@
 import * as RedisTypes from "redis"
 import { Schema as schema, WhereOptions } from "../types"
 import { convertWhere } from "./where"
-import { Not, Equal } from "../operators/FindOperators"
+import { Not, Equal, Like } from "../operators/FindOperators"
 
 type Cases = {
     input: WhereOptions | WhereOptions[]
@@ -33,7 +33,7 @@ const cases: Cases[] = [
     },
     {
         input: {
-            test: "hello world",
+            test: Like("hello world"),
             taskId: Not(Equal("task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f")),
         },
         output: "@test:(hello world) -@taskId:{task\\:9461dfe9\\-41f7\\-4a04\\-bc1c\\-ce2e3855d00f}"
@@ -41,8 +41,8 @@ const cases: Cases[] = [
     },
     {
         input: [
-            { name: Equal("pika") },
-            { name: Not(Equal("Dazai")) }
+            { name: Like("pika") },
+            { name: Not(Like("Dazai")) }
         ],
         output: "@name:(pika) | -@name:(Dazai)"
 

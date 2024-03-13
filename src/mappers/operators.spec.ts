@@ -1,6 +1,6 @@
 import { SchemaFieldTypes } from "redis"
 import { Operators } from "../types"
-import { Equal, Not } from "../operators/FindOperators"
+import { Equal, Like, Not } from "../operators/FindOperators"
 import { OperatorMapper } from "./operators"
 import { SchemaPropertyType } from "../types/SchemaProperty"
 
@@ -17,15 +17,39 @@ const cases: Cases[] = [
     {
         input: {
             propertyName: "name",
-            operator: Equal("Dazai"),
+            operator: Like("Dazai"),
             propertyType: SchemaFieldTypes.TEXT
         },
         output: "@name:(Dazai)"
     },
     {
         input: {
+            propertyName: "id",
+            operator: Like("task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f"),
+            propertyType: SchemaFieldTypes.TAG
+        },
+        output: "@id:{task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f}"
+    },
+    {
+        input: {
+            propertyName: "taskId",
+            operator: Equal("task:9461dfe9-41f7-4a04-bc1c-ce2e3855d00f"),
+            propertyType: SchemaFieldTypes.TAG
+        },
+        output: "@taskId:{task\\:9461dfe9\\-41f7\\-4a04\\-bc1c\\-ce2e3855d00f}"
+    },
+    {
+        input: {
             propertyName: "name",
-            operator: Not(Equal("Dazai")),
+            operator: Like("Dazai"),
+            propertyType: SchemaFieldTypes.TAG
+        },
+        output: "@name:{Dazai}"
+    },
+    {
+        input: {
+            propertyName: "name",
+            operator: Not(Like("Dazai")),
             propertyType: SchemaFieldTypes.TEXT
         },
         output: "-@name:(Dazai)"

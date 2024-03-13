@@ -1,6 +1,7 @@
 import { KeysOperatorTypes, Operator, OperatorTypes } from "../types"
 
 export const Equal = createFindOperator("equal")
+export const Like = createFindOperator("like")
 export const Not = createFindOperator("not")
 
 function createFindOperator<S extends KeysOperatorTypes>(type: S) {
