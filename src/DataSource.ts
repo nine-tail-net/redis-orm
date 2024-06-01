@@ -2,7 +2,7 @@ import "reflect-metadata";
 import * as RedisTypes from "redis"
 import { EntityClass } from "./types"
 import { internalStorage } from "./internalStorage"
-import { Repository } from "./repository/Repository"
+import { getRepository } from "./repository/Repository"
 import { Schema } from "./types/Schema";
 import { SchemaPropertyType } from "./types/SchemaProperty";
 
@@ -86,7 +86,7 @@ export class DataSource {
     }
 
     getRepository(entity: new () => any) {
-        return Repository(entity)
+        return getRepository(entity)
     }
 
 }

@@ -1,3 +1,3 @@
-import { Repository } from "./Repository";
+import { getRepository } from "./Repository";
 
-export const BaseEntity = Repository(class { });
+export const BaseEntity = getRepository(class { })
