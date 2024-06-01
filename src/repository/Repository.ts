@@ -7,12 +7,12 @@ import { isEmptyObject } from "../utils";
 // <Entity extends RootEntity = RootEntity, Class = { new(): Entity }>(this: Class,
 export type BaseEntityClassType<Entity extends object> = {
     new(...args: any[]): Entity;
-    get<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, id: string): Promise<FindResult<CEntity> | undefined>
-    set<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, id: string, value: Partial<CEntity>): Promise<FindResult<CEntity> | undefined>
-    create<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, value: CEntity, id?: string): Promise<FindResult<CEntity>>
-    delete<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, id: string): Promise<number>
-    find<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, options: FindOptions<CEntity>): Promise<FindResult<CEntity>[]>
-    findOne<CEntity extends Entity, Class extends { new(): CEntity }>(this: Class, options: FindOneOptions<CEntity>): Promise<FindResult<CEntity> | undefined>
+    get<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string): Promise<FindResult<CEntity> | undefined>
+    set<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string, value: Partial<CEntity>): Promise<FindResult<CEntity> | undefined>
+    create<CEntity extends Entity>(this: { new(): CEntity } & Entity, value: CEntity, id?: string): Promise<FindResult<CEntity>>
+    delete<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string): Promise<number>
+    find<CEntity extends Entity>(this: { new(): CEntity } & Entity, options: FindOptions<CEntity>): Promise<FindResult<CEntity>[]>
+    findOne<CEntity extends Entity>(this: { new(): CEntity } & Entity, options: FindOneOptions<CEntity>): Promise<FindResult<CEntity> | undefined>
 }
 
 export function getRepository<Entity extends object>(base: new (...args: any[]) => Entity): BaseEntityClassType<Entity> {
