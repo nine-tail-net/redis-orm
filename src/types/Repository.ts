@@ -7,7 +7,7 @@ type options = {
 }
 
 export type FindOptions<T> = {
-    where: WhereOptions<T> | WhereOptions<T>[]
+    where?: WhereOptions<T> | WhereOptions<T>[]
     options?: options
 }
 

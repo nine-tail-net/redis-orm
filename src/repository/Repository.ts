@@ -44,11 +44,11 @@ export function getRepository<Entity extends object>(base: new (...args: any[]) 
 
         static async find<CEntity extends Entity>({ where, options }: FindOptions<Entity>) {
             const { connection, schema } = internalStorage.getEntityDefinition(this)
-            const query = convertWhere(
+            const query = where && convertWhere(
                 schema,
                 ...(Array.isArray(where) ? where : [where])
             )
-            const { documents } = await connection.ft.search(schema.index, query, {
+            const { documents } = await connection.ft.search(schema.index, query || '*', {
                 SORTBY: options?.sortby,
                 LIMIT: options?.limit
             })
