@@ -9,6 +9,7 @@ export type BaseEntityClassType<Entity extends object> = {
     new(...args: any[]): Entity;
     get<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string): Promise<FindResult<CEntity> | undefined>
     set<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string, value: Partial<CEntity>): Promise<FindResult<CEntity> | undefined>
+    generateId(partitionKey?: string): string
     create<CEntity extends Entity>(this: { new(): CEntity } & Entity, value: CEntity, id?: string): Promise<FindResult<CEntity>>
     delete<CEntity extends Entity>(this: { new(): CEntity } & Entity, id: string): Promise<number>
     find<CEntity extends Entity>(this: { new(): CEntity } & Entity, options: FindOptions<CEntity>): Promise<FindResult<CEntity>[]>
@@ -31,9 +32,13 @@ export function getRepository<Entity extends object>(base: new (...args: any[]) 
             return { id, value } as FindResult<CEntity>
         }
 
-        static async create<CEntity extends Entity>(value: Entity, id?: string) {
+        static generateId(partitionKey?: string) {
             const { schema } = internalStorage.getEntityDefinition(this)
-            const hKey = id || `${schema.name}:${uuidv4()}`
+            const hKey = `${schema.name}:${partitionKey || uuidv4()}`
+            return hKey
+        }
+        static async create<CEntity extends Entity>(value: Entity, id?: string) {
+            const hKey = id || this.generateId()
             return await Repository.set.call(this, hKey, value) as FindResult<CEntity>
         }
 
