@@ -22,9 +22,9 @@ export function parseParameters(where: WhereOptions, schema: Schema): string[] {
         const schemaPropertyType = schema.properties[key]
 
         if (isFindOperator(value))
-            filters.push(OperatorMapper(value, key, schemaPropertyType))
+            filters.push(OperatorMapper(value, key, schemaPropertyType.type))
         else if (isPrimitive(value))
-            filters.push(OperatorMapper(Equal(value), key, schemaPropertyType))
+            filters.push(OperatorMapper(Equal(value), key, schemaPropertyType.type))
         else if (value === undefined)
             continue;
         else

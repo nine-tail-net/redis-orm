@@ -11,9 +11,11 @@ client.on('error', err => {
 export const AppDataSource = new DataSource({
     client,
     entities: Object.values(entities),
-    sync: true
+    sync: true,
+    createIndexes: true
 })
 
-client.connect().then(async _ => {
+client.connect().then(async connection => {
     await AppDataSource.initialize()
+    await connection.disconnect()
 })

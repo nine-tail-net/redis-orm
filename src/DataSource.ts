@@ -17,11 +17,13 @@ export class DataSource {
     readonly schemas: Schema[] = []
     readonly entities: EntityClass[] = []
     private synchronizeSchemas?: boolean
+    private createIndexes: boolean
 
-    constructor({ client, entities, sync }: {
+    constructor({ client, entities, sync, createIndexes }: {
         client: RedisClient,
         entities: EntityClass[],
-        sync?: boolean
+        sync?: boolean,
+        createIndexes: boolean
     }) {
         for (let entity of entities) {
             const schema = this.createSchema(entity)
@@ -33,6 +35,7 @@ export class DataSource {
         }
         this.client = client
         this.entities = entities
+        this.createIndexes = createIndexes
         this.synchronizeSchemas = sync
     }
 
@@ -46,7 +49,8 @@ export class DataSource {
         const properties: Schema["properties"] = {}
         for (let { propertyName, options } of propertyMetadata) {
             if (entityOptions.type === "HASH")
-                properties[propertyName] = RedisTypes.SchemaFieldTypes[options.type.toUpperCase() as SchemaPropertyType]
+                //@ts-ignore
+                properties[propertyName] = Object.fromEntries(Object.entries(options).map(([key, value]) => key == "type" ? [key, value.toUpperCase() as SchemaPropertyType] : [key.toUpperCase(), value]))
             else
                 throw new Error(`Entity type: ${entityOptions.type} is not supported in this time.`)
         }
@@ -63,10 +67,16 @@ export class DataSource {
     }
 
     private async createIndex(schema: Schema) {
-        // const info = await this.client.ft.info(schema.index)
+        console.log(schema)
+
+        let index = await this.client.ft.info(schema.index).catch(_ => _)
+        
+        if (index && !this.synchronizeSchemas) return;
+
         await this.client.ft.dropIndex(schema.index).catch(_ => _)
 
         await this.client.ft.create(
+            //@ts-ignore
             schema.index,
             schema.properties,
             schema.options
@@ -79,7 +89,7 @@ export class DataSource {
         if (!this.client.isReady)
             throw new Error("Redis client not init")
 
-        if (this.synchronizeSchemas)
+        if (this.createIndexes)
             await Promise.all(this.schemas.map(
                 schema => this.createIndex(schema)
             ))
