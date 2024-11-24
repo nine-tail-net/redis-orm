@@ -12,9 +12,9 @@ const schema: schema = {
     name: "test",
     index: `idx:test`,
     properties: {
-        test: RedisTypes.SchemaFieldTypes.TEXT,
-        name: RedisTypes.SchemaFieldTypes.TEXT,
-        taskId: RedisTypes.SchemaFieldTypes.TAG
+        test: { type: RedisTypes.SchemaFieldTypes.TEXT },
+        name: { type: RedisTypes.SchemaFieldTypes.TEXT },
+        taskId: { type: RedisTypes.SchemaFieldTypes.TAG }
     },
     options: {
         ON: "HASH",
